@@ -4,6 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ *  Adapter class for RecyclerView containing information about contacts.
+ */
 class ContactAdapter(private val contacts: List<Contact>) :
     RecyclerView.Adapter<ContactViewHolder>() {
 
