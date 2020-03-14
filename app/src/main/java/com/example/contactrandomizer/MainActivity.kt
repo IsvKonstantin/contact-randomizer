@@ -42,10 +42,10 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.WRITE_CONTACTS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
-                showMessageOKCancel()
-                return
-            }
+            /*           if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
+                           showMessageOKCancel()
+                           return
+                       }*/
 
             requestPermissions(
                 arrayOf(Manifest.permission.WRITE_CONTACTS),
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showMessageOKCancel() {
         AlertDialog.Builder(this)
-            .setMessage("You need to allow access to Contacts.\nGo to application settings?")
+            .setMessage("Application needs access to contacts in order to randomize them.\n\nGo to application settings?")
             .setPositiveButton("OK") { _, _ -> openApplicationSettings() }
             .setNegativeButton("Cancel", null)
             .create()
@@ -83,8 +83,12 @@ class MainActivity : AppCompatActivity() {
             WRITE_CONTACTS_PERMISSION -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadContacts()
             } else {
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT)
-                    .show()
+                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    showMessageOKCancel()
+                }
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
@@ -94,6 +98,7 @@ class MainActivity : AppCompatActivity() {
         buttonRandomize.visibility = if (loading) View.INVISIBLE else View.VISIBLE
         recyclerView.visibility = if (loading) View.INVISIBLE else View.VISIBLE
         progressBar.visibility = if (loading) View.VISIBLE else View.INVISIBLE
+        loadingInfo.visibility = if (loading) View.VISIBLE else View.INVISIBLE
     }
 
     private fun loadContacts() {
